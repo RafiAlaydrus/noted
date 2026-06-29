@@ -17,6 +17,7 @@ export default function Dashboard({ data, ops, navigate }) {
   const todayStr = today()
 
   const urgentTasks = tasks.filter(t => !t.done && (t.dueDate === todayStr || isOverdue(t.dueDate)))
+  const upcomingTasks = tasks.filter(t => !t.done && t.dueDate !== todayStr && !isOverdue(t.dueDate))
   const dueTodayCount = tasks.filter(t => !t.done && t.dueDate === todayStr).length
   const overdueCount = tasks.filter(t => !t.done && isOverdue(t.dueDate)).length
 
@@ -46,6 +47,18 @@ export default function Dashboard({ data, ops, navigate }) {
         ) : (
           <div className="space-y-1.5">
             {urgentTasks.map(task => (
+              <DashTaskRow key={task.id} task={task} onToggle={() => ops.toggleTask(task.id)} />
+            ))}
+          </div>
+        )}
+      </Section>
+
+      <Section title="Upcoming tasks" action={{ label: 'See all', onClick: () => navigate('tasks') }}>
+        {upcomingTasks.length === 0 ? (
+          <Empty>No upcoming tasks.</Empty>
+        ) : (
+          <div className="space-y-1.5">
+            {upcomingTasks.map(task => (
               <DashTaskRow key={task.id} task={task} onToggle={() => ops.toggleTask(task.id)} />
             ))}
           </div>
