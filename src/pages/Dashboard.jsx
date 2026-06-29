@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Check } from 'lucide-react'
 import { today, isOverdue, formatDate, projectProgress } from '../lib/utils'
 
@@ -132,16 +133,22 @@ function Empty({ children }) {
 }
 
 function DashTaskRow({ task, onToggle }) {
+  const [completing, setCompleting] = useState(false)
   const overdue = isOverdue(task.dueDate)
+
+  function handleToggle() {
+    if (completing) return
+    setCompleting(true)
+    setTimeout(onToggle, 440)
+  }
+
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 flex items-center gap-3">
+    <div className={`bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 flex items-center gap-3 ${completing ? 'slide-out' : ''}`}>
       <button
-        onClick={onToggle}
-        className={`w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
-          task.done ? 'bg-gray-900 border-gray-900 dark:bg-white dark:border-white' : 'border-gray-300 dark:border-gray-600 hover:border-gray-500 dark:hover:border-gray-400'
-        }`}
+        onClick={handleToggle}
+        className={`w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors ${completing ? 'check-pop bg-gray-900 border-gray-900 dark:bg-white dark:border-white' : task.done ? 'bg-gray-900 border-gray-900 dark:bg-white dark:border-white' : 'border-gray-300 dark:border-gray-600 hover:border-gray-500 dark:hover:border-gray-400'}`}
       >
-        {task.done && <Check size={11} className="text-white dark:text-gray-900" />}
+        {(task.done || completing) && <Check size={11} className="text-white dark:text-gray-900" />}
       </button>
       <span className={`flex-1 text-sm ${task.done ? 'line-through text-gray-400 dark:text-gray-600' : 'text-gray-800 dark:text-gray-200'}`}>
         {task.title}

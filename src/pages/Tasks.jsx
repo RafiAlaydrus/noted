@@ -16,7 +16,14 @@ export default function Tasks({ data, ops, defaultProjectId = null }) {
   const [sort, setSort] = useState('createdAt')
   const [editing, setEditing] = useState(null)
   const [confirmId, setConfirmId] = useState(null)
+  const [bouncingId, setBouncingId] = useState(null)
   const todayStr = today()
+
+  function handleToggle(id) {
+    setBouncingId(id)
+    setTimeout(() => setBouncingId(null), 400)
+    ops.toggleTask(id)
+  }
 
   let list = [...data.tasks]
   if (defaultProjectId) list = list.filter(t => t.projectId === defaultProjectId)
@@ -82,10 +89,10 @@ export default function Tasks({ data, ops, defaultProjectId = null }) {
             const overdue = !task.done && isOverdue(task.dueDate)
             return (
               <div key={task.id} className={`bg-white dark:bg-gray-800 border rounded-xl px-4 py-3 flex items-center gap-3 ${overdue ? 'border-red-200 dark:border-red-900' : 'border-gray-200 dark:border-gray-700'}`}>
-                <button onClick={() => ops.toggleTask(task.id)}
+                <button onClick={() => handleToggle(task.id)}
                   className={`w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
                     task.done ? 'bg-gray-900 border-gray-900 dark:bg-white dark:border-white' : 'border-gray-300 dark:border-gray-600 hover:border-gray-500 dark:hover:border-gray-400'
-                  }`}>
+                  } ${bouncingId === task.id ? 'check-pop' : ''}`}>
                   {task.done && <Check size={11} className="text-white dark:text-gray-900" />}
                 </button>
                 <span className={`flex-1 text-sm min-w-0 ${task.done ? 'line-through text-gray-400 dark:text-gray-600' : 'text-gray-800 dark:text-gray-200'}`}>

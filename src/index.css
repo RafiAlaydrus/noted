@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes checkPop {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.45); }
+  55%  { transform: scale(0.82); }
+  75%  { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+
+@keyframes slideOut {
+  0%   { opacity: 1; transform: translateX(0);    max-height: 80px; margin-bottom: 0.375rem; padding-top: 0.75rem; padding-bottom: 0.75rem; }
+  45%  { opacity: 0; transform: translateX(18px); max-height: 80px; margin-bottom: 0.375rem; padding-top: 0.75rem; padding-bottom: 0.75rem; }
+  100% { opacity: 0; transform: translateX(18px); max-height: 0;    margin-bottom: 0;        padding-top: 0;       padding-bottom: 0; }
+}
+
+.check-pop {
+  animation: checkPop 0.38s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.slide-out {
+  animation: slideOut 0.44s ease forwards;
+  overflow: hidden;
+  pointer-events: none;
+}
