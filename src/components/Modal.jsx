@@ -11,14 +11,14 @@ export default function Modal({ title, onClose, children, size = 'md' }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className={`relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full ${size === 'lg' ? 'max-w-2xl' : 'max-w-md'}`}>
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+      <div className={`relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full flex flex-col max-h-[90vh] ${size === 'lg' ? 'max-w-2xl' : 'max-w-md'}`}>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
           <h2 className="font-semibold text-gray-900 dark:text-white text-base">{title}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
             <X size={18} />
           </button>
         </div>
-        <div className="p-5">{children}</div>
+        <div className="p-5 overflow-y-auto">{children}</div>
       </div>
     </div>
   )
