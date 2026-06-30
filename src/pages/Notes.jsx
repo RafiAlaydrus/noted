@@ -13,6 +13,7 @@ export default function Notes({ data, ops, defaultProjectId = null }) {
 
   let list = [...data.notes]
   if (defaultProjectId) list = list.filter(n => n.projectId === defaultProjectId)
+  else list = list.filter(n => !n.projectId)
   if (search.trim()) {
     const q = search.toLowerCase()
     list = list.filter(n => n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q))

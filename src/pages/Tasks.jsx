@@ -27,6 +27,7 @@ export default function Tasks({ data, ops, defaultProjectId = null }) {
 
   let list = [...data.tasks]
   if (defaultProjectId) list = list.filter(t => t.projectId === defaultProjectId)
+  else list = list.filter(t => !t.projectId)
   if (filter === 'today') list = list.filter(t => !t.done && t.dueDate === todayStr)
   else if (filter === 'overdue') list = list.filter(t => !t.done && isOverdue(t.dueDate))
   else if (filter === 'done') list = list.filter(t => t.done)
