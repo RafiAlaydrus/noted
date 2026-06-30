@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Plus, Search, Trash2, X } from 'lucide-react'
+import { Plus, Search, Trash2, X, Pencil } from 'lucide-react'
 import Modal, { ConfirmModal } from '../components/Modal'
 import { formatDateTime } from '../lib/utils'
 
@@ -7,6 +7,7 @@ const INPUT = 'border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 
 
 export default function Notes({ data, ops, defaultProjectId = null }) {
   const [search, setSearch] = useState('')
+  const [viewing, setViewing] = useState(null)
   const [editing, setEditing] = useState(null)
   const [confirmId, setConfirmId] = useState(null)
 
@@ -53,7 +54,7 @@ export default function Notes({ data, ops, defaultProjectId = null }) {
       ) : (
         <div className="space-y-2">
           {list.map(note => (
-            <div key={note.id} onClick={() => setEditing(note)}
+            <div key={note.id} onClick={() => setViewing(note)}
               className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
               <div className="flex items-start gap-2">
                 <div className="flex-1 min-w-0">
@@ -76,6 +77,9 @@ export default function Notes({ data, ops, defaultProjectId = null }) {
         </div>
       )}
 
+      {viewing !== null && (
+        <NoteViewModal note={viewing} onEdit={() => { setEditing(viewing); setViewing(null) }} onClose={() => setViewing(null)} />
+      )}
       {editing !== null && (
         <NoteModal note={editing} projects={data.projects} defaultProjectId={defaultProjectId} onSave={handleSave} onClose={() => setEditing(null)} />
       )}
@@ -83,6 +87,32 @@ export default function Notes({ data, ops, defaultProjectId = null }) {
         <ConfirmModal message="Delete this note?" onConfirm={() => { ops.deleteNote(confirmId); setConfirmId(null) }} onCancel={() => setConfirmId(null)} />
       )}
     </div>
+  )
+}
+
+function NoteViewModal({ note, onEdit, onClose }) {
+  return (
+    <Modal title={note.title || 'Untitled'} onClose={onClose} size="lg">
+      <div className="space-y-4">
+        <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed min-h-[120px]">
+          {note.body || <span className="text-gray-400 italic">No content</span>}
+        </div>
+        {note.tags?.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {note.tags.map(tag => (
+              <span key={tag} className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">{tag}</span>
+            ))}
+          </div>
+        )}
+        <p className="text-xs text-gray-400 dark:text-gray-500">Updated {formatDateTime(note.updatedAt)}</p>
+        <div className="flex gap-2 pt-1">
+          <button onClick={onClose} className="flex-1 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Close</button>
+          <button onClick={onEdit} className="flex-1 py-2 text-sm bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors flex items-center justify-center gap-1.5">
+            <Pencil size={13} />Edit
+          </button>
+        </div>
+      </div>
+    </Modal>
   )
 }
 

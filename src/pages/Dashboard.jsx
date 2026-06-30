@@ -17,8 +17,8 @@ export default function Dashboard({ data, ops, navigate }) {
   const { tasks, notes, projects } = data
   const todayStr = today()
 
-  const urgentTasks = tasks.filter(t => !t.done && (t.dueDate === todayStr || isOverdue(t.dueDate)))
-  const upcomingTasks = tasks.filter(t => !t.done && t.dueDate !== todayStr && !isOverdue(t.dueDate))
+  const urgentTasks = tasks.filter(t => !t.done && !t.projectId && (t.dueDate === todayStr || isOverdue(t.dueDate)))
+  const upcomingTasks = tasks.filter(t => !t.done && !t.projectId && t.dueDate !== todayStr && !isOverdue(t.dueDate))
   const dueTodayCount = tasks.filter(t => !t.done && t.dueDate === todayStr).length
   const overdueCount = tasks.filter(t => !t.done && isOverdue(t.dueDate)).length
 
